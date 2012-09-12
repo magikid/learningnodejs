@@ -8,3 +8,5 @@ handle["/start"] = requestHandlers.start;
 handle["/upload"] = requestHandlers.upload;
 
 server.start(router.route, handle);
+
+//falling asleep, leaving off right before doing anything with formidable.
