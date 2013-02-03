@@ -4,12 +4,16 @@
  */
 
 var express = require('express')
+  , stylus = require("stylus")
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path');
 
 var app = express();
+function compile(str,path) {
+    return stylus(str);
+};
 
 app.configure(function(){
   app.set('port', process.env.PORT);
@@ -20,8 +24,15 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
-  app.use(require('stylus').middleware(__dirname + '/public'));
+  app.use(require('stylus').middleware({
+    src: __dirname + '/public',
+    compile: compile
+    }));
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use(function(err, res, req, next){
+      console.error(err.stack);
+      res.send(500, 'Something broke!');
+  });
 });
 
 app.configure('development', function(){
